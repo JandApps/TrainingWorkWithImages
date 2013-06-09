@@ -1,6 +1,21 @@
-package com.example.trainingworkwithimages;
+package com.example.trainingworkwithimages.utils;
 
 public class Matrix<T> {
+
+	public static class Position {
+
+		public final int row;
+		public final int column;
+
+		public Position(int row, int column) {
+			if (row < 0 || column < 0) {
+				throw new IllegalArgumentException();
+			}
+			this.row = row;
+			this.column = column;
+		}
+
+	}
 
 	public final int rows;
 	public final int columns;

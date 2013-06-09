@@ -1,4 +1,4 @@
-package com.example.trainingworkwithimages;
+package com.example.trainingworkwithimages.utils;
 
 public class Dimension {
 

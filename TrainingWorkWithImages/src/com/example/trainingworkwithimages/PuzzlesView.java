@@ -1,5 +1,9 @@
 package com.example.trainingworkwithimages;
 
+import com.example.trainingworkwithimages.utils.Dimension;
+import com.example.trainingworkwithimages.utils.Matrix;
+import com.example.trainingworkwithimages.utils.Size;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -13,32 +17,29 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class CustomDrawView extends View {
+public class PuzzlesView extends View {
 
 	private final int LATTICE_WIDTH = 1;
 	private Dimension dim = new Dimension(6, 4);
 	private Matrix<Bitmap> puzzles = new Matrix<Bitmap>(dim);
 	private Bitmap fullImage = null;
-	private int puzzleHeight;
-	private int puzzleWidth;
-	private int fullImageWidth;
-	private int fullImageHeight;
+	private Size puzzleSize;
+	private Size fullImageSize;
+	private Point lastTouch;
+	private Point touchedLeftUpper;
 	private int touchedRow = -1;
 	private int touchedColumn = -1;
-	private int lastTouchX;
-	private int lastTouchY;
-	private Point touchedLeftUpper;
 
-	public CustomDrawView(Context context) {
+	public PuzzlesView(Context context) {
 		super(context);
 	}
 
-	public CustomDrawView(Context context, AttributeSet attrs) {
+	public PuzzlesView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 	
 
-	public CustomDrawView(Context context, AttributeSet attrs, int defStyle) {
+	public PuzzlesView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 	
@@ -57,14 +58,12 @@ public class CustomDrawView extends View {
 	private void calculateSizes() {
 		int width = getWidth() - LATTICE_WIDTH * (dim.columns - 1);
 		int height = getHeight() - LATTICE_WIDTH * (dim.rows - 1);
-		puzzleWidth = width / dim.columns;
-		puzzleHeight = height / dim.rows;
-		fullImageWidth = puzzleWidth * dim.columns;
-		fullImageHeight = puzzleHeight * dim.rows;
+		puzzleSize = new Size(width / dim.columns, height / dim.rows);
+		fullImageSize = new Size(puzzleSize.width * dim.columns, puzzleSize.height * dim.rows);
 	}
 	
 	private Bitmap scaleBitmap(Bitmap bitmap) {
-		return Bitmap.createScaledBitmap(bitmap, fullImageWidth, fullImageHeight, true);
+		return Bitmap.createScaledBitmap(bitmap, fullImageSize.width, fullImageSize.height, true);
 	}
 
 	@Override
@@ -90,8 +89,8 @@ public class CustomDrawView extends View {
 	}
 	
 	private Point leftUpperOfPuzzle(int row, int column) {
-		int x = (puzzleWidth + LATTICE_WIDTH) * column;
-		int y = (puzzleHeight + LATTICE_WIDTH) * row;
+		int x = (puzzleSize.width + LATTICE_WIDTH) * column;
+		int y = (puzzleSize.height + LATTICE_WIDTH) * row;
 		return new Point(x, y);
 	}
 
@@ -117,9 +116,9 @@ public class CustomDrawView extends View {
 	}
 	
 	private Bitmap puzzle(Bitmap bitmap, int row, int column) {
-		int x = column * puzzleWidth;
-		int y = row * puzzleHeight;
-		return Bitmap.createBitmap(bitmap, x, y, puzzleWidth, puzzleHeight);
+		int x = column * puzzleSize.width;
+		int y = row * puzzleSize.height;
+		return Bitmap.createBitmap(bitmap, x, y, puzzleSize.width, puzzleSize.height);
 	}
 
 	@Override
@@ -142,11 +141,10 @@ public class CustomDrawView extends View {
 	private void onDownTouch(MotionEvent event) {
 		int x = (int) event.getX();
 		int y = (int) event.getY();
-		int column = x / (puzzleWidth + LATTICE_WIDTH);
-		int row = y / (puzzleHeight + LATTICE_WIDTH);
+		int column = x / (puzzleSize.width + LATTICE_WIDTH);
+		int row = y / (puzzleSize.height + LATTICE_WIDTH);
 		if (row < dim.rows && column < dim.columns && insidePuzzle(x, y)) {
-			lastTouchX = x;
-			lastTouchY = y;
+			lastTouch = new Point(x, y);
 			touchedLeftUpper = leftUpperOfPuzzle(row, column);
 			setTouchedPuzzlePosition(row, column);
 			Log.d("leonidandand", "row: " + row + "; column: " + column);
@@ -154,8 +152,8 @@ public class CustomDrawView extends View {
 	}
 
 	private boolean insidePuzzle(int x, int y) {
-		return ((x % (puzzleWidth + LATTICE_WIDTH)) < puzzleWidth) &&
-			   ((y % (puzzleHeight + LATTICE_WIDTH)) < puzzleHeight);
+		return ((x % (puzzleSize.width + LATTICE_WIDTH)) < puzzleSize.width) &&
+			   ((y % (puzzleSize.height + LATTICE_WIDTH)) < puzzleSize.height);
 	}
 
 	private void setTouchedPuzzlePosition(int row, int column) {
@@ -167,11 +165,10 @@ public class CustomDrawView extends View {
 		if (existTouchedPuzzle()) {
 			int x = (int) event.getX();
 			int y = (int) event.getY();
-			int dx = x - lastTouchX;
-			int dy = y - lastTouchY;
+			int dx = x - lastTouch.x;
+			int dy = y - lastTouch.y;
 			touchedLeftUpper = new Point(touchedLeftUpper.x + dx, touchedLeftUpper.y + dy);
-			lastTouchX = x;
-			lastTouchY = y;
+			lastTouch = new Point(x, y);
 			invalidate();
 		}
 	}
@@ -184,8 +181,8 @@ public class CustomDrawView extends View {
 		if (existTouchedPuzzle()) {
 			int x = (int) event.getX();
 			int y = (int) event.getY();
-			int column = x / (puzzleWidth + LATTICE_WIDTH);
-			int row = y / (puzzleHeight + LATTICE_WIDTH);
+			int column = x / (puzzleSize.width + LATTICE_WIDTH);
+			int row = y / (puzzleSize.height + LATTICE_WIDTH);
 			if (row < dim.rows && column < dim.columns && insidePuzzle(x, y)) {
 				swapWithTouchedPuzzle(row, column);
 			}

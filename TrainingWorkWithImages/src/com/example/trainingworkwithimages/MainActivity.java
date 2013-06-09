@@ -18,12 +18,12 @@ public class MainActivity extends Activity {
 	
 	private Random random = new Random();
 
-	private CustomDrawView drawer;
+	private PuzzlesView drawer;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		drawer = new CustomDrawView(this);
+		drawer = new PuzzlesView(this);
 		setContentView(drawer);
 	}
 
