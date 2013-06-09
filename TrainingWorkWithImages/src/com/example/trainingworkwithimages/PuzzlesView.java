@@ -1,9 +1,6 @@
 package com.example.trainingworkwithimages;
 
-import com.example.trainingworkwithimages.utils.Dimension;
-import com.example.trainingworkwithimages.utils.Matrix;
-import com.example.trainingworkwithimages.utils.Size;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -17,8 +14,13 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class PuzzlesView extends View {
+import com.example.trainingworkwithimages.utils.Dimension;
+import com.example.trainingworkwithimages.utils.GameFill;
+import com.example.trainingworkwithimages.utils.Matrix;
+import com.example.trainingworkwithimages.utils.Size;
 
+public class PuzzlesView extends View {
+	
 	private final int LATTICE_WIDTH = 1;
 	private Dimension dim = new Dimension(6, 4);
 	private Matrix<Bitmap> puzzles = new Matrix<Bitmap>(dim);
@@ -29,6 +31,7 @@ public class PuzzlesView extends View {
 	private Point touchedLeftUpper;
 	private int touchedRow = -1;
 	private int touchedColumn = -1;
+	private int[][] gameFill = GameFill.getGameFill();
 
 	public PuzzlesView(Context context) {
 		super(context);
@@ -105,11 +108,19 @@ public class PuzzlesView extends View {
 		p.setColorFilter(filter);
 		return p;
 	}
+	
+
 
 	private void fillPuzzles() {
-		for (int row = 0; row < dim.rows; ++row) {
-			for (int column = 0; column < dim.columns; ++column) {
-				Bitmap puzzle = puzzle(fullImage, row, column);
+		gameFill = GameFill.generateRandomGameMatr();
+		
+		for (int row = 0; row < gameFill.length; ++row) {
+			for (int column = 0; column < gameFill[row].length; ++column) {
+				
+				int x = gameFill[row][column] / dim.columns;
+				int y = gameFill[row][column] % dim.columns;
+				
+				Bitmap puzzle = puzzle(fullImage, x, y);
 				puzzles.set(row, column, puzzle);
 			}
 		}
@@ -177,6 +188,7 @@ public class PuzzlesView extends View {
 		return touchedRow != -1 && touchedColumn != -1;
 	}
 
+	@SuppressLint("ShowToast")
 	private void onUpTouch(MotionEvent event) {
 		if (existTouchedPuzzle()) {
 			int x = (int) event.getX();
@@ -186,6 +198,7 @@ public class PuzzlesView extends View {
 			if (row < dim.rows && column < dim.columns && insidePuzzle(x, y)) {
 				swapWithTouchedPuzzle(row, column);
 			}
+			
 			touchedRow = -1;
 			touchedColumn = -1;
 			invalidate();
