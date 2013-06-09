@@ -39,7 +39,6 @@ public class MainActivity extends Activity {
 		case R.id.showImage:
 			int imageId = imageIds[random.nextInt(imageIds.length)];
 			Bitmap bitmap = BitmapFactory.decodeResource(getResources(), imageId);
-			drawer.setDimension(new Dimension(4, 2));
 			drawer.setBitmap(bitmap);
 			break;
 		}
