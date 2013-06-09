@@ -45,23 +45,5 @@ public class MainActivity extends Activity {
 		}
 		return true;
 	}
-	
-	private int generateId() {
-		int id;
-		do {
-			id = random.nextInt();
-		} while (findViewById(id) != null);
-		return id;
-	}
-
-	/*
-	private Bitmap puzzle(Bitmap bitmap, int row, int column) {
-		int width = bitmap.getWidth() / dimension.columns;
-		int height = bitmap.getHeight() / dimension.rows;
-		int x = width * column;
-		int y = height * row;
-		return Bitmap.createBitmap(bitmap, x, y, width, height);
-	}
-	*/
 
 }

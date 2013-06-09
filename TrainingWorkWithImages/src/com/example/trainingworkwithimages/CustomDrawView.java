@@ -8,11 +8,14 @@ import android.view.View;
 
 public class CustomDrawView extends View {
 
+	private final int LATTICE_WIDTH = 2;
 	private Dimension dim = new Dimension(4, 2);
 	private Matrix<Bitmap> puzzles = new Matrix<Bitmap>(dim);
 	private Bitmap bitmap = null;
 	private int puzzleHeight;
 	private int puzzleWidth;
+	private int screenWidth;
+	private int screenHeight;
 
 	public CustomDrawView(Context context) {
 		super(context);
@@ -32,17 +35,23 @@ public class CustomDrawView extends View {
 	}
 	
 	public void setBitmap(Bitmap bitmap) {
-		this.puzzleWidth = getWidth() / dim.columns;
-		this.puzzleHeight = getHeight() / dim.rows;
+		calculateSizes();
 		this.bitmap = scaleBitmap(bitmap);
 		fillPuzzles();
 		invalidate();
 	}
 	
+	private void calculateSizes() {
+		int width = getWidth() - LATTICE_WIDTH * (dim.columns - 1);
+		int height = getHeight() - LATTICE_WIDTH * (dim.rows - 1);
+		this.puzzleWidth = width / dim.columns;
+		this.puzzleHeight = height / dim.rows;
+		this.screenWidth = puzzleWidth * dim.columns;
+		this.screenHeight = puzzleHeight * dim.rows;
+	}
+	
 	private Bitmap scaleBitmap(Bitmap bitmap) {
-		int width = puzzleWidth * dim.columns;
-		int height = puzzleHeight * dim.rows;
-		return Bitmap.createScaledBitmap(bitmap, width, height, true);
+		return Bitmap.createScaledBitmap(bitmap, screenWidth, screenHeight, true);
 	}
 
 	@Override
@@ -55,8 +64,8 @@ public class CustomDrawView extends View {
 	private void drawPuzzles(Canvas canvas) {
 		for (int row = 0; row < dim.rows; ++row) {
 			for (int column = 0; column < dim.columns; ++column) {
-				int x = column * puzzleWidth;
-				int y = row * puzzleHeight;
+				int x = (puzzleWidth + LATTICE_WIDTH) * column;
+				int y = (puzzleHeight + LATTICE_WIDTH) * row;
 				canvas.drawBitmap(puzzles.get(row, column), x, y, null);
 			}
 		}
