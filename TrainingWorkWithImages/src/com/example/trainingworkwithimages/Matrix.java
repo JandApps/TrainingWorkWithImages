@@ -15,6 +15,10 @@ public class Matrix<T> {
 		this.columns = columns;
 		values = (T[]) new Object[rows * columns];
 	}
+	
+	public Matrix(Dimension dim) {
+		this(dim.rows, dim.columns);
+	}
 
 	public void set(int row, int column, T value) {
 		checkIndexes(row, column);

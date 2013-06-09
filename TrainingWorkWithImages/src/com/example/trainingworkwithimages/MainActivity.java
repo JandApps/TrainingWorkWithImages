@@ -12,7 +12,9 @@ import android.view.MenuItem;
 
 public class MainActivity extends Activity {
 
-	private final static int[] imageIds = new int[] { R.drawable.woman, R.drawable.woman2 };
+	private final static int[] imageIds = new int[] {
+		R.drawable.woman, R.drawable.woman2, R.drawable.google, R.drawable.ic_launcher
+	};
 	
 	private Random random = new Random();
 
@@ -37,6 +39,7 @@ public class MainActivity extends Activity {
 		case R.id.showImage:
 			int imageId = imageIds[random.nextInt(imageIds.length)];
 			Bitmap bitmap = BitmapFactory.decodeResource(getResources(), imageId);
+			drawer.setDimension(new Dimension(4, 2));
 			drawer.setBitmap(bitmap);
 			break;
 		}
