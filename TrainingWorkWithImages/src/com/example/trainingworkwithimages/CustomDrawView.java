@@ -2,14 +2,12 @@ package com.example.trainingworkwithimages;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
 
 public class CustomDrawView extends View {
 
-	private static final int imageId = R.drawable.google;
 	private Bitmap bitmap = null;
 
 	public CustomDrawView(Context context) {
@@ -27,6 +25,7 @@ public class CustomDrawView extends View {
 	
 	public void setBitmap(Bitmap bitmap) {
 		this.bitmap = scaleBitmap(bitmap);
+		invalidate();
 	}
 
 	@Override

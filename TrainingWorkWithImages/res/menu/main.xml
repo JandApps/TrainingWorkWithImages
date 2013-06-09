@@ -1,9 +1,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
-    <item
-        android:id="@+id/showDimension"
-        android:orderInCategory="100"
-        android:title="show dimension"/>
     
     <item
         android:id="@+id/showImage"
