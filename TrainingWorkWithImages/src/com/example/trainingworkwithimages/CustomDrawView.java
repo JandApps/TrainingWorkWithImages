@@ -12,7 +12,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.RelativeLayout.LayoutParams;
 
 public class CustomDrawView extends View {
 
@@ -100,6 +99,7 @@ public class CustomDrawView extends View {
 		return row == touchedRow && column == touchedColumn;
 	}
 	
+	@SuppressWarnings("unused")
 	private Paint colorFilterPaint() {
 		Paint p = new Paint(Color.BLUE);
 		ColorFilter filter = new LightingColorFilter(Color.argb(120, 20, 60, 250), 1);
