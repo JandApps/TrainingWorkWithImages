@@ -18,7 +18,7 @@ public class CustomDrawView extends View {
 	private final int LATTICE_WIDTH = 1;
 	private Dimension dim = new Dimension(6, 4);
 	private Matrix<Bitmap> puzzles = new Matrix<Bitmap>(dim);
-	private Bitmap bitmap = null;
+	private Bitmap fullImage = null;
 	private int puzzleHeight;
 	private int puzzleWidth;
 	private int fullImageWidth;
@@ -49,7 +49,7 @@ public class CustomDrawView extends View {
 	
 	public void setBitmap(Bitmap bitmap) {
 		calculateSizes();
-		this.bitmap = scaleBitmap(bitmap);
+		this.fullImage = scaleBitmap(bitmap);
 		fillPuzzles();
 		invalidate();
 	}
@@ -69,7 +69,7 @@ public class CustomDrawView extends View {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		if (bitmap != null) {
+		if (fullImage != null) {
 			drawPuzzles(canvas);
 		}
 	}
@@ -110,7 +110,7 @@ public class CustomDrawView extends View {
 	private void fillPuzzles() {
 		for (int row = 0; row < dim.rows; ++row) {
 			for (int column = 0; column < dim.columns; ++column) {
-				Bitmap puzzle = puzzle(bitmap, row, column);
+				Bitmap puzzle = puzzle(fullImage, row, column);
 				puzzles.set(row, column, puzzle);
 			}
 		}
